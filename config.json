@@ -1,5 +1,9 @@
 {
     "config":{
         "token":"NTQyNzc4NzY4OTEwMTg4NTU0.XNY3hA.ZbDSJSHBWjVvIluuUYUx-D7wR3s"
-    }
+    },
+
+    "extensions": [
+        "extensions.chat"
+    ]
 }
