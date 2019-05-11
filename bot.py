@@ -1,8 +1,12 @@
 from time import sleep
 from os import system, name
-import discord
 import asyncio
 import json
+
+# Discord
+import discord
+from discord.ext import commands
+
 
 # Simple function to clear the console...
 def clear():
@@ -20,13 +24,12 @@ def clear():
 # Loading config file...
 with open("./config.json", "r", encoding="utf-8") as config:
     j = json.load(config)
-    config.Close()
 
 # Defining the token (got from .json file)
 token = j["config"]["token"]
 
 # Initializing the client
-client = discord.Client()
+client = commands.Bot(command_prefix="~")
 
 # Doing some work at startup...
 @client.event
@@ -63,6 +66,15 @@ async def on_ready():
 
 # Reading all extensions added in config.json
 extensions = j["extensions"]
+
+if __name__ == "__main__":
+    
+    for extension in extensions:
+        try:
+            client.load_extension(extension)
+            print (f" ~> Extension [{extension}] loaded with success!")
+        except Exception as e:
+            print (f" ~> Cannot load cog due to [{e}]")
 
 
 
