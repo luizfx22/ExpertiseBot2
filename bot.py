@@ -58,7 +58,7 @@ async def on_ready():
     print(" ╚══════════════════════════════════════╝")
     
     # Console screen title (just for, idk, make it better, i guess)
-    system('TITLE Expertise Bot Core :: Rewrite v0.0.1 :: Online as [ {} ].'.format(name))
+    system('TITLE Expertise Bot Core :: Rewrite v0.0.1 :: Online as [ {} ]'.format(name))
 
 
 # Reading all extensions added in config.json
