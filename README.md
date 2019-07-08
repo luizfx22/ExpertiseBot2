@@ -1,2 +1,2 @@
 # Expertise-Bot-Rewrite
-A simple bot, made with Python and Discord.py
+A simple discord bot, being made with Python and Discord.py Rewrite (latest)
