@@ -30,6 +30,8 @@ token = j["config"]["token"]
 
 # Initializing the client
 client = commands.Bot(command_prefix="~")
+activity = discord.Game(name="Use ~help for help!")
+
 
 # Doing some work at startup...
 @client.event
@@ -62,7 +64,7 @@ async def on_ready():
     
     # Console screen title (just for, idk, make it better, i guess)
     system('TITLE Expertise Bot Core :: Rewrite v0.0.1 :: Online as [ {} ]'.format(name))
-
+    await client.change_presence(status=discord.Status.online, activity=activity)
 
 # Reading all extensions added in config.json
 extensions = j["extensions"]
