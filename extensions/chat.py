@@ -1,4 +1,3 @@
-import discord
 from discord.ext import commands
 
 class Chat_Control(commands.Cog):
