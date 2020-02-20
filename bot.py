@@ -2,6 +2,7 @@ from os import system, name
 import json
 
 # Discord
+import discord
 from discord.ext import commands
 
 
