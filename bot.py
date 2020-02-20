@@ -1,10 +1,7 @@
-from time import sleep
 from os import system, name
-import asyncio
 import json
 
 # Discord
-import discord
 from discord.ext import commands
 
 
