@@ -74,4 +74,4 @@ if __name__ == '__main__':
         exit
 
 # Running the client
-client.run("NTQyNzc4NzY4OTEwMTg4NTU0.XlMyfg.1cvHmd0CEW2JkoZQw5hYqMztFAo")
+client.run("")
