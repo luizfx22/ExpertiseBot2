@@ -8,7 +8,6 @@ from discord.ext import commands
 
 # Simple function to clear the console...
 def clear():
-
     # for windows
     if name == 'nt':
         _ = system('cls')
@@ -26,9 +25,12 @@ with open("./config.json", "r", encoding="utf-8") as config:
 # Defining the token (got from .json file)
 token = j["config"]["token"]
 
+# Defining prefix from config
+prefix = j["config"]["prefix"]
+
 # Initializing the client
-client = commands.Bot(command_prefix="~")
-activity = discord.Game(name="Use ~help for help!")
+client = commands.Bot(command_prefix=prefix)
+activity = discord.Game(name=f"Use {prefix}help for help!")
 
 
 # Doing some work at startup...
@@ -64,17 +66,8 @@ async def on_ready():
     system('TITLE Expertise Bot Core :: Rewrite v0.0.1 :: Online as [ {} ]'.format(name))
     await client.change_presence(status=discord.Status.online, activity=activity)
 
-# Reading all extensions added in config.json
-extensions = j["extensions"]
-
-if __name__ == "__main__":
-    
-    for extension in extensions:
-        try:
-            client.load_extension(extension)
-            print (f" ~> Extension [{extension}] loaded with success!")
-        except Exception as e:
-            print (f" ~> Cannot load cog due to [{e}]")
+if __name__ == '__main__':
+    client.load_extension('extensions.cog_man')
 
 
 
