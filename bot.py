@@ -68,12 +68,9 @@ async def on_ready():
 
 if __name__ == '__main__':
     try:
-        client.load_extension('extensions.cog_man')
+        client.load_extension('extensions.ext_mgr')
     except Exception as err:
         print(f" ~ An error occurred whilst loading all cogs!\n{err}")
-
-
-
 
 # Running the client
 client.run(token)
