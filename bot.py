@@ -63,11 +63,14 @@ async def on_ready():
     print(" ╚══════════════════════════════════════╝")
     
     # Console screen title (just for, idk, make it better, i guess)
-    system('TITLE Expertise Bot Core :: Rewrite v0.0.1 :: Online as [ {} ]'.format(name))
+    system('TITLE Expertise Bot Core :: Rewrite v0.0.3 :: Online as [ {} ]'.format(name))
     await client.change_presence(status=discord.Status.online, activity=activity)
 
 if __name__ == '__main__':
-    client.load_extension('extensions.cog_man')
+    try:
+        client.load_extension('extensions.cog_man')
+    except Exception as err:
+        print(f" ~ An error occurred whilst loading all cogs!\n{err}")
 
 
 
