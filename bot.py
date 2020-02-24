@@ -56,7 +56,7 @@ async def on_ready():
     
     # The box    
     print(" ╔══════════════════════════════════════╗")
-    print(" ║ => We're ready to go!                ║")
+    print(" ║       Welcome to ExpertiseBot!       ║")
     print(" ╟──────────────────────────────────────╢")
     print(" ║{: ^38}║".format(name_))
     print(" ╟──────────────────────────────────────╢")
@@ -71,6 +71,7 @@ if __name__ == '__main__':
         client.load_extension('extensions.ext_mgr')
     except Exception as err:
         print(f" ~ An error occurred whilst loading all cogs!\n{err}")
+        exit
 
 # Running the client
 client.run(token)
