@@ -1,9 +1,7 @@
 import json
-import time
 import hashlib
 
 # Imports
-import discord
 from discord.ext import commands
 
 class CogMan(commands.Cog, name="Extension manager for ExpertiseBot"):
@@ -42,7 +40,8 @@ class CogMan(commands.Cog, name="Extension manager for ExpertiseBot"):
             await ctx.send("All extensions reloaded successfully!")
 
     @commands.command(name="install", pass_context=True)
-    async def install(self, ctx, url):
+    async def install(self, ctx, options, name):
+        valid_opts = []
         await ctx.send(f"Instalar {url}")
     
     @commands.command(name="ghash", pass_context=True)
