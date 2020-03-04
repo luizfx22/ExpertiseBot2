@@ -1,7 +1,7 @@
 ![ExpertisePublicCoverImageGitHub](https://i.imgur.com/unrX2de.jpg)
 ---
 <p align="center">
- <a href="https://lgtm.com/projects/g/iLuiizUHD/ExpertiseBotRewritten/context:python">
+ <a href="https://lgtm.com/projects/g/iLuiizUHD/ExpertiseBotRewritten/context:python" target="_blank">
   <img src="https://img.shields.io/lgtm/grade/python/g/iLuiizUHD/ExpertiseBotRewritten.svg?logo=lgtm&logoWidth=18"/>
  </a>
 </p>
