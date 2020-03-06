@@ -1,0 +1,15 @@
+{
+  "meta": {
+    "main_file": "index.py",
+    "name": "Hello World",
+    "description": "A short brief about your extension",
+    "author": "Your discord name (name#numeric_tag, eg: Matt#2518) or your discord id",
+    "version": "Your extension version (can be empty)",
+    "mode": 1,
+    "guild_id": "Your server id (used only if the mode is set to single server"
+  },
+  "allowed_roles": [
+    "Filled automatically by the bot"
+  ],
+  "hash": "The SHA-256 hash of extension name"
+}
