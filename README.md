@@ -5,6 +5,7 @@
   <img src="https://img.shields.io/lgtm/grade/python/g/iLuiizUHD/ExpertiseBotRewritten.svg?logo=lgtm&logoWidth=18"/>
  </a>
  <img src="https://img.shields.io/github/license/iLuiizUHD/ExpertiseBot2"/>
+ <img src="https://img.shields.io/badge/Python-3.7-orange"/>
 </p>
 
 # Introduction
