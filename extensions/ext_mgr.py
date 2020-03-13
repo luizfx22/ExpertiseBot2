@@ -1,7 +1,6 @@
 import json
 import hashlib
 import sqlite3
-import os
 
 # Imports
 from discord.ext import commands
@@ -12,11 +11,11 @@ class CogMan(commands.Cog, name="Extension manager for ExpertiseBot"):
         
         # Create or load SQLite3 database and cursor
         try:
-            connection = sqlite3.connect("./extensions/plugins.db")
+            connection = sqlite3.connect("./public/plugins.db")
         except Exception:
-            with open('./extensions/plugins.db', 'w') as dbFile:
+            with open('./public/plugins.db', 'w') as dbFile:
                 dbFile.close()
-            connection = sqlite3.connect("./extensions/plugins.db")
+            connection = sqlite3.connect("./public/plugins.db")
         
         cursor = connection.cursor()
 
@@ -49,12 +48,11 @@ class CogMan(commands.Cog, name="Extension manager for ExpertiseBot"):
 
         # Start indexing all installed plugins
         plugins = cursor.execute("SELECT * FROM plugins")
+        if len(plugins) == 0:
+            print(" - Found nothing! Skipping...")
+
         for plugin in plugins:
             print(plugin)
-        else:
-            print(" - Found nothing! Skipping...")
-            cursor.execute("INSERT INTO plugins (PluginName, PluginMain, PluginDirectory) VALUES ('Hello World', '/public/HelloWorld/main.json', '/public/HelloWorld/')")
-            connection.commit()        
 
     @commands.command(name="reload", pass_context=True)
     async def reload(self, ctx):
