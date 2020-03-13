@@ -3,7 +3,7 @@ Main file for the cog
 '''
 
 # Imports
-import discord
+# import discord
 from discord.ext import commands
 
 class HelloWorld(commands.Cog):
