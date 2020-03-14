@@ -1,36 +1,19 @@
 import json
 import hashlib
 import sqlite3
+from pathlib import Path
 
 # Imports
 from discord.ext import commands
 
+def validatePlugin():
+    pass
+
 class CogMan(commands.Cog, name="Extension manager for ExpertiseBot"):
     def __init__(self, client):
         self.client = client
+        self.loadedPlugins = []
         
-        # Create or load SQLite3 database and cursor
-        try:
-            connection = sqlite3.connect("./public/plugins.db")
-        except Exception:
-            with open('./public/plugins.db', 'w') as dbFile:
-                dbFile.close()
-            connection = sqlite3.connect("./public/plugins.db")
-        
-        cursor = connection.cursor()
-
-        # Creating table if not exists
-        query = """
-            CREATE TABLE IF NOT EXISTS plugins (
-                id INTEGER PRIMARY KEY AUTOINCREMENT,
-                PluginName TEXT NOT NULL,
-                PluginMain TEXT NOT NULL,
-                PluginDirectory TEXT NOT NULL
-            )
-        """
-        cursor.execute(query)
-        connection.commit()
-
         # Loading config file...
         with open("./config.json", "r", encoding="utf-8") as config:
             self.configFile = json.load(config)
@@ -45,14 +28,7 @@ class CogMan(commands.Cog, name="Extension manager for ExpertiseBot"):
                 print(f" ~> Cannot load cog due to [{e}]")
         
         print(" -> Indexing plugins...")
-
-        # Start indexing all installed plugins
-        plugins = cursor.execute("SELECT * FROM plugins")
-        if len(plugins) == 0:
-            print(" - Found nothing! Skipping...")
-
-        for plugin in plugins:
-            print(plugin)
+    
 
     @commands.command(name="reload", pass_context=True)
     async def reload(self, ctx):
