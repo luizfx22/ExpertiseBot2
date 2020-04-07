@@ -5,13 +5,25 @@ class Chat_Control(commands.Cog):
         self.client = client
     
     @commands.command(pass_context = True)
-    async def delete(self, ctx, msg = 10):
-        await ctx.send("Hai")
+    async def clear(self, ctx, amount = 10):
+        if amount < 1:
+            await ctx.send(f":x: The amount cannot be less than 1!")
+            return
+        try:
+            amount = int(amount)
+        except Exception:
+            await ctx.send(f":x: {amount} is not a number! Try again!")
+        deleted = await ctx.channel.purge(limit=amount)
+        if len(deleted) < 1:
+            await ctx.send(":x: Couldn't delete the messages")
+            return
+        messages = [f":white_check_mark: Deleted all **{amount}** messages!",
+                    f":white_check_mark: Deleted **{amount}** message!"]
+        if len(deleted) == 1:
+            await ctx.send(messages[1])
+            return
+
+        await ctx.send(messages[0])
     
-    @commands.Cog.listener()
-    async def on_message(self, message):
-        print(message.author.id)
-
-
 def setup(client):
     client.add_cog(Chat_Control(client))
