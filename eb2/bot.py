@@ -59,4 +59,4 @@ if __name__ == '__main__':
         exit
 
 # Running the client
-client.run(["config"]["token"])
+client.run(configFile["config"]["token"])
