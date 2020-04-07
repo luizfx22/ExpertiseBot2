@@ -6,7 +6,7 @@ from pathlib import Path
 # Imports
 from discord.ext import commands
 
-class CogMan(commands.Cog, name="Extension manager for ExpertiseBot"):
+class CogMan(commands.Cog, name="ExpertiseBot core commands"):
     def __init__(self, client):
         self.client = client
         self.loadedPlugins = []
