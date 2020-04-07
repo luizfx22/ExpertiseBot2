@@ -1,6 +1,6 @@
 from discord.ext import commands
 
-class Chat_Control(commands.Cog):
+class ChatControl(commands.Cog, name="Chat management commands"):
     def __init__(self, client):
         self.client = client
     
@@ -26,4 +26,4 @@ class Chat_Control(commands.Cog):
         await ctx.send(messages[0])
     
 def setup(client):
-    client.add_cog(Chat_Control(client))
+    client.add_cog(ChatControl(client))
