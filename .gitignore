@@ -108,3 +108,4 @@ config.json
 ExpertiseBot Plugins index Session.sql
 
 Scripts/
+eb2/config.json
