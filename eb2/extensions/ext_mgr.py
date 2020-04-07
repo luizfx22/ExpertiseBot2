@@ -27,7 +27,7 @@ class CogMan(commands.Cog, name="Extension manager for ExpertiseBot"):
     @commands.command(name="reload", pass_context=True)
     async def reload(self, ctx):
         async with ctx.typing():
-            await ctx.send("Reloading extensions!")
+            message = await ctx.send(":clock4: Reloading extensions!")
             # Reading all extensions added in config.json
             self.extensions = self.configFile["extensions"]
             for extension in self.extensions:
@@ -37,9 +37,9 @@ class CogMan(commands.Cog, name="Extension manager for ExpertiseBot"):
 
                 except Exception as e:
                     print(f" ~> Cannot reload cog due to [{e}]")
-                    await ctx.send("Couldn't reload all extensions!")
+                    await ctx.send(":x: Couldn't reload all extensions!")
 
-            await ctx.send("All extensions reloaded successfully!")
+            await message.edit(content=":white_check_mark: All extensions reloaded successfully!")
 
 def setup(client):
     client.add_cog(CogMan(client))
