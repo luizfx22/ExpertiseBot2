@@ -1,0 +1,10 @@
+{
+    "config":{
+        "token":"YOUR TOKEN HERE",
+        "default_prefix": "~"
+    },
+
+    "extensions": [
+        "extensions.chat"
+    ]
+}
