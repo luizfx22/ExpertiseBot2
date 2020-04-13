@@ -38,8 +38,9 @@ class CogMan(commands.Cog, name="ExpertiseBot core commands"):
                 except Exception as e:
                     print(f" ~> Cannot reload cog due to [{e}]")
                     await ctx.send(":x: Couldn't reload all extensions!")
-
-            await message.edit(content=":white_check_mark: All extensions reloaded successfully!")
+            await message.delete()
+            message = await ctx.send(":white_check_mark: All extensions reloaded successfully!")
+            await message.delete(delay=2)
 
 def setup(client):
     client.add_cog(CogMan(client))

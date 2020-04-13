@@ -1,13 +1,20 @@
 from libs import utils
+from colorama import init as colinit
+from colorama import Fore, Back, Style
 import json
+import math
+import os
 
 # Discord
 import discord
-from discord.ext import commands
+from discord.ext import commands, tasks
 
 # Loading config file...
 with open("./config.json", "r", encoding="utf-8") as config:
     configFile = json.load(config)
+
+# Initializing colorama
+colinit()
 
 # Defining the token (got from config.json file)
 token = configFile["config"]["token"]
@@ -40,18 +47,22 @@ async def on_ready():
             act_char += 1
     else:
         name_ = name
-    
-    # The box    
-    print(" ╔══════════════════════════════════════╗")
-    print(" ║       Welcome to ExpertiseBot!       ║")
-    print(" ╟──────────────────────────────────────╢")
-    print(" ║{: ^38}║".format(name_))
-    print(" ╚══════════════════════════════════════╝")
-    
+
     await client.change_presence(status=discord.Status.online, activity=activity)
-    print("\n Logs:\n")
+
+    print(f"\n {Fore.LIGHTBLUE_EX}ExpertiseBot² Core{Style.RESET_ALL}\n")
+    RefreshConsoleStatus.start()
+    
+@tasks.loop(seconds=5)
+async def RefreshConsoleStatus():
+    clientLatency = math.floor(client.latency * 1000)
+    clientGuilds = len(list(client.guilds))
+    
+    os.system(f"TITLE ExpertiseBot2 Core v0.0.2 :: Ping: {clientLatency}ms :: # Guilds: {clientGuilds}")
 
 if __name__ == '__main__':
+    print(" Preparing to start...")
+    print(" Loading cogs...")
     try:
         client.load_extension('extensions.ext_mgr')
     except Exception as err:

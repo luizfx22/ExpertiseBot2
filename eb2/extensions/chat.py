@@ -13,17 +13,21 @@ class ChatControl(commands.Cog, name="Chat management commands"):
             amount = int(amount)
         except Exception:
             await ctx.send(f":x: {amount} is not a number! Try again!")
-        deleted = await ctx.channel.purge(limit=amount)
-        if len(deleted) < 1:
-            await ctx.send(":x: Couldn't delete the messages")
-            return
-        messages = [f":white_check_mark: Deleted all **{amount}** messages!",
-                    f":white_check_mark: Deleted **{amount}** message!"]
-        if len(deleted) == 1:
-            await ctx.send(messages[1])
-            return
+        async with ctx.typing():
+            deleted = await ctx.channel.purge(limit=amount)
+            if len(deleted) < 1:
+                await ctx.send(":x: Couldn't delete the messages")
+                return
 
-        await ctx.send(messages[0])
-    
+            messages = [f":white_check_mark: Deleted all **{len(deleted)}** messages!",
+                        f":white_check_mark: Deleted **{len(deleted)}** message!"]
+            if len(deleted) == 1:
+                message = await ctx.send(messages[1])
+                await message.delete(delay=2)
+                return
+
+            message = await ctx.send(messages[0])
+            await message.delete(delay=2)
+
 def setup(client):
     client.add_cog(ChatControl(client))
