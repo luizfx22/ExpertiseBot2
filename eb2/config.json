@@ -1,7 +1,8 @@
 {
     "config":{
         "token":"NTQyNzc4NzY4OTEwMTg4NTU0.XoqFWw.6PCAj9McHWftWTgkTrDG5ZBiD3k",
-        "default_prefix": "eb!"
+        "default_prefix": "eb!",
+        "db": "mysql+mysqldb://EB2SQL:password@127.0.0.1:3306/expertisebot"
     },
 
     "extensions": [

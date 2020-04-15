@@ -1,6 +1,20 @@
+# Utilities
+import json
+from sqlalchemy import create_engine
+
 # Imports
 from discord.ext import commands
 from discord import Guild
+
+# Loading config file...
+with open("./config.json", "r", encoding="utf-8") as config:
+    configFile = json.load(config)
+
+# MySQL
+connectionStr = configFile["config"]["db"]
+
+# MySQL Alchemy Engine Creation
+MySQLEngine = create_engine(connectionStr, pool_size=10, pool_recycle=3600)
 
 class Roles(commands.Cog, name="Roles management"):
     def __init__(self, client):
