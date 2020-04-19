@@ -1,3 +1,4 @@
+from discord import Embed, Colour, Guild
 from discord.ext import commands
 
 class ChatControl(commands.Cog, name="Chat management commands"):
@@ -23,11 +24,27 @@ class ChatControl(commands.Cog, name="Chat management commands"):
                         f":white_check_mark: Deleted **{len(deleted)}** message!"]
             if len(deleted) == 1:
                 message = await ctx.send(messages[1])
-                await message.delete(delay=2)
+                await message.delete(delay=5)
                 return
 
             message = await ctx.send(messages[0])
-            await message.delete(delay=2)
+            await message.delete(delay=5)
+
+    @commands.command(pass_context = True)
+    async def alert(self, ctx, title="Titulo", description="Descrição"):
+        await ctx.message.delete()
+
+        await ctx.send("Hey @everyone!")
+
+        user = Guild.get_member(ctx.message.author.guild, user_id=ctx.message.author.id)
+
+        embed = Embed()
+        embed.title = title
+        embed.description = description
+        embed.colour = Colour.gold()
+        embed.set_author(name=ctx.message.author.name, icon_url=user.avatar_url)
+        await ctx.send(embed=embed)
+
 
 def setup(client):
     client.add_cog(ChatControl(client))
