@@ -9,7 +9,7 @@
 </p>
 
 # Introduction
-(This project is paused due to my job)
+(This project is paused due to my job)<br>
 ExpertiseBot² is an automated account that can literally take care of your Discord server whithout you. It can manage users, channels, roles, permissions and much more.
 
 # Integrations
