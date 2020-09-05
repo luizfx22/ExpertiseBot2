@@ -44,7 +44,13 @@ class ChatControl(commands.Cog, name="Chat management commands"):
         embed.colour = Colour.gold()
         embed.set_author(name=ctx.message.author.name, icon_url=user.avatar_url)
         await ctx.send(embed=embed)
+    
+    @commands.Cog.listener()
+    async def on_message(self, message):
+        if message.author.id != 159985870458322944:
+            return False
 
+        print(message.content)
 
 def setup(client):
     client.add_cog(ChatControl(client))
