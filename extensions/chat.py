@@ -3,6 +3,7 @@ import mysql.connector
 from mysql.connector import errorcode
 from discord import Embed, Colour, Guild, TextChannel
 from discord.ext import commands
+from discord.utils import get
 import re
 import json
 import random
@@ -132,7 +133,21 @@ class ChatControl(commands.Cog, name="Chat management commands"):
         return True
     
     async def setup_set_log(self, ctx, channel):
-        print(channel)
+        if len(channel) < 1:
+            await ctx.send("Cannot set a Null server to be the log server. Geez")
+            return False
+        
+        channel_id = re.sub(r'[^\d]+', '', channel[0])
+
+        channel = get(ctx.message.guild.text_channels, id=int(channel_id))
+
+        update_channel_sql = """UPDATE sec_channels SET `fl_log` = 1 WHERE `id` = %s"""
+
+        self.cursor.execute(update_channel_sql, (channel_id,))
+        self.connection.commit()
+
+        print(self.cursor.rowcount)
+
 
     # Commands
     @commands.command(pass_context = True)
