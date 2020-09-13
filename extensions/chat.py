@@ -1,9 +1,67 @@
+
+import mysql.connector
+from mysql.connector import errorcode
 from discord import Embed, Colour, Guild
 from discord.ext import commands
+import re
+import json
+import random
 
 class ChatControl(commands.Cog, name="Chat management commands"):
     def __init__(self, client):
         self.client = client
+        
+        # Loading config file...
+        with open("./config.json", "r", encoding="utf-8") as config:
+            configFile = json.load(config)
+
+        print(f' >> Connecting to database with user {configFile["db-settings"]["user"]}!')
+
+        try:
+            self.connection = mysql.connector.connect(
+                host=f'{configFile["db-settings"]["address"]}',
+                user=f'{configFile["db-settings"]["user"]}',
+                password=f'{configFile["db-settings"]["password"]}',
+                database=f'{configFile["db-settings"]["database"]}'
+            )
+
+            print(" >> Database connection made!")
+
+        except mysql.connector.Error as error:
+            if error.errno == errorcode.ER_BAD_DB_ERROR:
+                print(" >> Database doesn't exist")
+            elif error.errno == errorcode.ER_ACCESS_DENIED_ERROR:
+                print(" >> User name or password is wrong")
+            else:
+                print(error)
+                raise Exception(error)
+        
+        self.cursor = self.connection.cursor()
+    
+    async def setup_backup(self, ctx):
+        message = ctx.message
+        guild = ctx.guild
+
+        guild_id = guild.id
+
+        sql = """INSERT IGNORE INTO sec_guilds (`id`, `name`) VALUES (%s, %s);"""
+        
+        embed = Embed(title="ExpertiseBot Channel Backup Utility", description="Using ExpertiseBot to create a backup of every message from any text channel available in guild.")
+        embed.color = 0x5CA7AD
+        embed.add_field(name="How to:", value="To create a backup you must set the channels to be watched and backup every message!")
+        
+        guild_text_channels = get
+
+        await ctx.send(embed=embed)
+
+        self.cursor.execute(sql, (guild.id, guild.name))
+
+        self.connection.commit()
+
+        await ctx.send(message.id)
+        
+
+        return True
     
     @commands.command(pass_context = True)
     async def clear(self, ctx, amount = 10):
@@ -45,12 +103,13 @@ class ChatControl(commands.Cog, name="Chat management commands"):
         embed.set_author(name=ctx.message.author.name, icon_url=user.avatar_url)
         await ctx.send(embed=embed)
     
-    @commands.Cog.listener()
-    async def on_message(self, message):
-        if message.author.id != 159985870458322944:
-            return False
+    @commands.command(pass_context=True)
+    async def backup(self, ctx, command):
+        commands = {
+            "setup": await self.setup_backup(ctx)
+        }
 
-        print(message.content)
+        return commands[command]
 
 def setup(client):
     client.add_cog(ChatControl(client))

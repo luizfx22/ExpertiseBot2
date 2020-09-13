@@ -23,8 +23,8 @@ class Management(commands.Cog):
 
       time.sleep(.500)
 
-  def cog_unload(self):
-    self.countdown_vote_timer.cancel()
+  # def cog_unload(self):
+  #   self.countdown_vote_timer.cancel()
 
 def setup(client):
   client.add_cog(Management(client))
