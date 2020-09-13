@@ -10,7 +10,6 @@ create table sec_messages
     media_url   text                                 not null,
     createdAt   datetime   default CURRENT_TIMESTAMP null,
     fl_pin      tinyint(1) default 0                 not null,
-    reactions   longtext                             not null,
     constraint sec_messages_sec_channels_id_fk
         foreign key (channel_id) references sec_channels (id)
             on delete cascade,
