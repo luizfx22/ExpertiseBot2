@@ -25,9 +25,8 @@ prefix = configFile["config"]["default_prefix"]
 
 # Initializing the client
 client = commands.Bot(command_prefix=prefix, self_bot=False)
-# activity = discord.Game(name=f"Grand Theft Auto VI", start=datetime.datetime.utcnow())
 
-activity = discord.Activity(name=f"o circo pegar fogo! Use {prefix}help para ajuda!", type=discord.ActivityType.watching)
+activity = discord.Activity(name=f"Use {prefix}help para ajuda!", type=discord.ActivityType.watching)
 
 
 # Doing some work at startup...
