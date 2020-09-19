@@ -27,6 +27,8 @@ class CogMan(commands.Cog, name="ExpertiseBot core commands"):
     @commands.command(name="reload", pass_context=True)
     async def reload(self, ctx):
         async with ctx.typing():
+            await ctx.message.delete()
+
             message = await ctx.send(":clock4: Reloading extensions!")
             # Reading all extensions added in config.json
             self.extensions = self.configFile["extensions"]
