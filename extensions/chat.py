@@ -200,11 +200,12 @@ class ChatControl(commands.Cog, name="Chat management commands"):
 
         success = Embed(
             title="ExpertiseBot Channel Backup Utility",
-            description=f"Success! {channel.mention} set as log channel successfully!"
+            description=f"Success! {channel.mention} was set as log channel successfully!"
         )
 
-        await ctx.send(embed=success)
-                
+        success.color = 0x0E8A00
+
+        await ctx.send(embed=success)             
     
     async def setup_unset_log(self, ctx, channel):
         if len(channel) < 1:
@@ -245,6 +246,15 @@ class ChatControl(commands.Cog, name="Chat management commands"):
         success.color = 0x0E8A00
 
         await ctx.send(embed=success)
+
+    # Backup enable and disable functions
+    async def backup_enable(self, ctx, channel):
+        guild_id = ctx.message.guild.id
+        channel_id = re.sub(r'[^\d]+', '', channel[0])
+
+        get_channel_sql = """SELECT `id` FROM sec_channels WHERE id = %s AND guild_id = %s"""
+        self.cursor.execute(get_channel_sql, (channel_id, guild_id,))
+
 
     # Commands
     @commands.command(pass_context = True)
@@ -293,7 +303,10 @@ class ChatControl(commands.Cog, name="Chat management commands"):
             "list": self.list_channels,
             "setup": self.setup_backup,
             "setlog": self.setup_set_log,
-            "unsetlog": self.setup_unset_log
+            "unsetlog": self.setup_unset_log,
+            "enable": self.backup_enable,
+            "disable": '',
+            "restore": ''
         }
 
         return await commands[command](ctx, args)
