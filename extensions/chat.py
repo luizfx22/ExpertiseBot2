@@ -2,7 +2,7 @@
 import mysql.connector
 from mysql.connector import errorcode
 from discord import Embed, Colour, Guild, TextChannel
-from discord.ext import commands
+from discord.ext import commands, tasks
 from discord.utils import get
 import re
 import json
@@ -51,7 +51,9 @@ class ChatControl(commands.Cog, name="Chat management commands"):
                       description="Using ExpertiseBot to create a backup of every message from any text channel available in this server (except private channels).")
         embed.color = 0x5CA7AD
         embed.add_field(
-            name="How to:", value="To create a backup you must set the channels to be watched and backup every message!", inline=False)
+            name="How to:",
+            value="To create a backup you must set the channels to be watched and backup every message!",
+            inline=False)
 
         # Selecting all channels in database
         sql_list_channels = """
@@ -87,7 +89,7 @@ class ChatControl(commands.Cog, name="Chat management commands"):
 
             embed.add_field(
                 name=f"{channel[2]}:",
-                value=f"Backup enabled: {'✔️' if backing_up else '❌'}{' | 🖨️' if log_channel else ''}",
+                value=f"Backup enabled: {'✅' if backing_up == True else '❌'}{' | 🖨️' if log_channel else ''}",
                 inline=False
             )
 
@@ -169,7 +171,7 @@ class ChatControl(commands.Cog, name="Chat management commands"):
     
     async def setup_set_log(self, ctx, channel):
         if len(channel) < 1:
-            await ctx.send("Cannot set a Null channel to be the log! :confounded:")
+            await ctx.send(":x: Cannot set a Null channel to be the log! :confounded:")
             return False
         
         guild_id = ctx.message.guild.id
@@ -195,7 +197,7 @@ class ChatControl(commands.Cog, name="Chat management commands"):
         updated = self.cursor.rowcount
 
         if updated == 0:
-            await ctx.send(f"Cannot set {channel.mention} as a log channel! :confused:")
+            await ctx.send(f":x: Cannot set {channel.mention} as a log channel! :confused:")
             return False
 
         success = Embed(
@@ -209,7 +211,7 @@ class ChatControl(commands.Cog, name="Chat management commands"):
     
     async def setup_unset_log(self, ctx, channel):
         if len(channel) < 1:
-            await ctx.send("Cannot set a Null channel to be the log! :confounded:")
+            await ctx.send(":x: Cannot set a Null channel to be the log! :confounded:")
             return False
 
         guild_id = ctx.message.guild.id
@@ -235,7 +237,7 @@ class ChatControl(commands.Cog, name="Chat management commands"):
         updated = self.cursor.rowcount
 
         if updated == 0:
-            await ctx.send(f"Cannot unset {channel.mention} as a log channel! :confused:")
+            await ctx.send(f":x: Cannot unset {channel.mention} as a log channel! :confused:")
             return False
 
         success = Embed(
@@ -248,13 +250,68 @@ class ChatControl(commands.Cog, name="Chat management commands"):
         await ctx.send(embed=success)
 
     # Backup enable and disable functions
-    async def backup_enable(self, ctx, channel):
+    async def backup_enable(self, ctx, _channel):
         guild_id = ctx.message.guild.id
-        channel_id = re.sub(r'[^\d]+', '', channel[0])
 
-        get_channel_sql = """SELECT `id` FROM sec_channels WHERE id = %s AND guild_id = %s"""
+        # Filtering channel id
+        channel_id = re.sub(r'[^\d]+', '', _channel[0])
+        
+        # Channel object
+        channel = get(ctx.message.guild.text_channels, id=int(channel_id))
+        
+        # Found if channel is in DB and backup is enabled
+        get_channel_sql = """SELECT `id`, `fl_backup` FROM sec_channels WHERE id = %s AND guild_id = %s;"""
         self.cursor.execute(get_channel_sql, (channel_id, guild_id,))
 
+        channel_data = self.cursor.fetchone()
+
+        if len(channel_data) < 1:
+            await ctx.send(f":x: {channel.mention} was not found in database! Please run `{configFile['config']['default_prefix']}backup setup` to sync channels in this server with ExpertiseBot's database! :confused:")
+
+        if channel_data[1] == 1:
+            await ctx.send(f":x: {channel.mention} backup is already enabled! :confused:")
+        
+        async with ctx.typing():
+            message = await ctx.send(f":clock1: Enabling backup on selected channel ({channel.mention})...")
+            
+            # Enable backup on specified channel
+            update_channel_sql = """UPDATE sec_channels SET `fl_backup` = 1 WHERE id = %s AND guild_id = %s;"""
+            self.cursor.execute(update_channel_sql, (channel_id, guild_id,))
+
+            self.connection.commit()
+
+            updated = self.cursor.rowcount
+
+            if updated == 0:
+                await ctx.send(f":x: Cannot set {channel.mention} as a log channel! :confused:")
+                await message.delete()
+                return False
+
+            success = Embed(
+                title="ExpertiseBot Channel Backup Utility",
+                description=f"Success! Backup successfully enabled on {channel.mention}!"
+            )
+
+            success.add_field(name=f"Running backup process in background...",
+                              value="Check channel description to get status!")
+
+            success.color = 0x0E8A00
+
+            # Delete waiting message...
+            await message.delete()
+
+            # Send success message
+            await ctx.send(embed=success)
+
+            backup_bg_task.start(ctx, channel)
+
+            return True
+    
+    @tasks.loop(seconds=10)
+    async def backup_bg_task(self, ctx, _channel):
+        print(ctx, _channel)
+
+        # self.backup_bg_task.cancel()
 
     # Commands
     @commands.command(pass_context = True)
@@ -360,24 +417,21 @@ class ChatControl(commands.Cog, name="Chat management commands"):
 
     @commands.Cog.listener()
     async def on_guild_channel_delete(self, channel):
+        now = time.strftime("%Y-%m-%d %H:%M:%S")
         update_channel_deleted_sql = """UPDATE `sec_channels` SET `fl_deleted` = %s, `deleted_at` = %s WHERE id = %s"""
         
-        now = time.strftime("%Y-%m-%d %H:%M:%S")
-        
-        print(now)
-
         self.cursor.execute(update_channel_deleted_sql, (1, now, channel.id,))
         self.connection.commit()
 
-        # remove_channel_sql = """
-        #     DELETE FROM sec_channels WHERE `id` = %s;
-        # """
-
-        # self.cursor.execute(remove_channel_sql, (channel.id,))
-        # self.connection.commit()
-
-        print(channel.guild.owner)
+        # Get highest role in guild then send a PM to everyone saying wich channel was deleted
+        # highest = channel.guild.roles[-1]
         
+        # for member in highest.members:
+        #     await member.send('teste :upside_down:')
+
+    def cog_unload(self):
+        self.backup_bg_task.cancel()
+        self.connection.close()
 
 def setup(client):
     client.add_cog(ChatControl(client))
